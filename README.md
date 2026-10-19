@@ -113,10 +113,15 @@ real-time-ecommerce-application/
   - Endpoints: Register, Login, Token Refresh/Verify, Profile, Change Password, Address CRUD, and Admin Customer List.
   - Added idempotent `python manage.py create_admin` management command.
   - 23 automated tests covering auth, token generation, address management, and permission barriers.
-- [ ] **Step 4: Frontend Setup (React, Vite, Tailwind CSS & Routing)**
-  - Scaffold React with Vite and Tailwind CSS.
-  - Configure React Router DOM for customer and protected admin paths.
-  - Set up Axios instance with JWT interceptors.
+- [x] **Step 4: Frontend Setup (React, Vite, Tailwind CSS & Routing)**
+  - Initialized React 18 with Vite bundler, Tailwind CSS v3.4, and PostCSS.
+  - Tailored rich Indian Bazar color palette (royal saffron `#E8590C`, forest emerald, and festive gold), typography (`Plus Jakarta Sans` & `Outfit`), and glassmorphism.
+  - Configured Axios client with automatic silent JWT token refresh and authorization header injection.
+  - Global `AuthContext` with login, register, profile sync, and role checks (`isAdmin`, `isCustomer`).
+  - Route guards: `ProtectedRoute`, `AdminRoute`, and `PublicOnlyRoute`.
+  - Responsive `Navbar`, `Footer`, `Button`, and `Input` reusable UI components.
+  - Implemented `HomePage`, `LoginPage` (with one-click admin test autofill), `RegisterPage`, `ProfilePage`, `AddressesPage`, and `AdminDashboardPage`.
+  - Built cleanly with zero bundling or lint errors (`npm run build`).
 - [ ] **Step 5: Products, Categories & Customer Catalog**
   - Category, Subcategory, Product, ProductImage, and Review models.
   - DRF ViewSets with search, filter (category, price range, stock), sorting, pagination.
