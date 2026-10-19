@@ -105,11 +105,14 @@ real-time-ecommerce-application/
   - Configured Django `settings.py`, SQLite database (DB Browser compatible), CORS headers, JWT settings, and media/static paths.
   - Initialized modular apps: `accounts`, `products`, `orders`, `payments`, `common`.
   - Added centralized health check endpoint (`/api/health/`) and automated test suite.
-- [ ] **Step 3: Custom User Model & Role-Based Authentication**
-  - Implement custom `User` model inheriting `AbstractBaseUser` / `PermissionsMixin`.
-  - Separate roles: `ADMIN` vs `CUSTOMER`.
-  - Customer Profile, shipping addresses model.
-  - JWT Authentication endpoints (Register, Login, Token Refresh, Profile View/Edit).
+- [x] **Step 3: Custom User Model & Role-Based Authentication**
+  - Implemented custom `User` model inheriting `AbstractBaseUser` / `PermissionsMixin` with email as unique identifier.
+  - Role-based separation: `CUSTOMER` and `ADMIN` (strict single-store model).
+  - Implemented `Address` model for multi-address delivery with automatic default address switching.
+  - JWT Authentication with custom claims (`role`, `is_admin`, `email`, `full_name`) and structured login/registration payloads.
+  - Endpoints: Register, Login, Token Refresh/Verify, Profile, Change Password, Address CRUD, and Admin Customer List.
+  - Added idempotent `python manage.py create_admin` management command.
+  - 23 automated tests covering auth, token generation, address management, and permission barriers.
 - [ ] **Step 4: Frontend Setup (React, Vite, Tailwind CSS & Routing)**
   - Scaffold React with Vite and Tailwind CSS.
   - Configure React Router DOM for customer and protected admin paths.
