@@ -122,10 +122,15 @@ real-time-ecommerce-application/
   - Responsive `Navbar`, `Footer`, `Button`, and `Input` reusable UI components.
   - Implemented `HomePage`, `LoginPage` (with one-click admin test autofill), `RegisterPage`, `ProfilePage`, `AddressesPage`, and `AdminDashboardPage`.
   - Built cleanly with zero bundling or lint errors (`npm run build`).
-- [ ] **Step 5: Products, Categories & Customer Catalog**
-  - Category, Subcategory, Product, ProductImage, and Review models.
-  - DRF ViewSets with search, filter (category, price range, stock), sorting, pagination.
-  - Frontend customer catalog: Home page, banner, product listing, search, details page.
+- [x] **Step 5: Products, Categories & Customer Catalog**
+  - Implemented `Category`, `Subcategory`, `Product`, `ProductImage`, and `Review` models in SQLite.
+  - Calculated dynamic fields: `effective_price`, `discount_percentage`, `is_in_stock`, `average_rating`, `reviews_count`.
+  - Multi-facet filters (`ProductFilter`): category, subcategory, price range (`min_price`, `max_price`), stock availability, and Indian origin region.
+  - Endpoints: Category list, Product catalog listing, Search, Product detail, Related products, and Review submission.
+  - Store Admin Product CRUD ViewSet (`/api/products/admin/items/`).
+  - Idempotent `python manage.py seed_products` seeder with authentic Indian products (Banarasi Sarees, Kashmiri Saffron, Tellicherry Pepper, Jaipur Pottery, Mamra Almonds).
+  - 37 automated tests passing cleanly across the backend test suite.
+  - Frontend `ProductCard`, live `ShopPage` catalog with sidebar filters, and `ProductDetailPage` with gallery and review form.
 - [ ] **Step 6: Cart, Wishlist, Checkout, Orders & Payments**
   - Cart, CartItem, Wishlist, Coupon, Order, OrderItem models.
   - Razorpay order creation and HMAC-SHA256 signature verification.
