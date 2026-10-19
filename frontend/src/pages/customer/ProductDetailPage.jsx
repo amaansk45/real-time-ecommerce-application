@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { productService } from '../../services/productService';
 import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
 import { Button } from '../../components/common/Button';
 import { ProductCard } from '../../components/customer/ProductCard';
 import {
@@ -23,6 +25,8 @@ import {
 export const ProductDetailPage = () => {
   const { slug } = useParams();
   const { isAuthenticated, user } = useAuth();
+  const { addToCart } = useCart();
+  const { toggleWishlist, isWishlisted } = useWishlist();
 
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -275,11 +279,22 @@ export const ProductDetailPage = () => {
               size="lg"
               className="flex-1 shadow-lg shadow-primary-500/20"
               icon={ShoppingBag}
+              onClick={() => addToCart(product.id, quantity)}
             >
               Add to Bag
             </Button>
-            <Button variant="outline" size="lg" className="flex items-center justify-center gap-2">
-              <Heart className="w-4 h-4" /> Save to Wishlist
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => toggleWishlist(product)}
+              className="flex items-center justify-center gap-2"
+            >
+              <Heart
+                className={`w-4 h-4 ${
+                  isWishlisted(product.id) ? 'fill-red-500 text-red-500' : ''
+                }`}
+              />
+              {isWishlisted(product.id) ? 'Saved to Wishlist' : 'Save to Wishlist'}
             </Button>
           </div>
 

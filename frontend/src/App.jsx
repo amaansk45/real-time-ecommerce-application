@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
+import { WishlistProvider } from './context/WishlistContext';
 import { CustomerLayout } from './components/common/CustomerLayout';
 import { AdminLayout } from './components/admin/AdminLayout';
 import { ProtectedRoute, AdminRoute, PublicOnlyRoute } from './routes/RouteGuards';
@@ -20,7 +22,9 @@ export const App = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
+        <CartProvider>
+          <WishlistProvider>
+            <Routes>
           {/* Customer / Storefront Layout */}
           <Route path="/" element={<CustomerLayout />}>
             <Route index element={<HomePage />} />
@@ -164,6 +168,8 @@ export const App = () => {
           {/* 404 Not Found Catch-All */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+          </WishlistProvider>
+        </CartProvider>
       </AuthProvider>
     </BrowserRouter>
   );
