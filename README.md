@@ -95,14 +95,16 @@ real-time-ecommerce-application/
 
 ## 📋 Step-by-Step Implementation Roadmap
 
-- [x] **Step 1: Project Setup and Folder Structure** (Current)
+- [x] **Step 1: Project Setup and Folder Structure**
   - Configured Git repository, `.gitignore`, `.gitattributes`, and `.env.example` templates.
   - Established modular backend and frontend folder hierarchy.
   - Committed foundational structure to GitHub.
-- [ ] **Step 2: Django & Django REST Framework Backend Setup**
-  - Python virtual environment setup.
-  - Install dependencies: `django`, `djangorestframework`, `django-cors-headers`, `pillow`, `djangorestframework-simplejwt`, `razorpay`, `python-dotenv`.
-  - Configure Django `settings.py`, SQLite database, CORS headers, media/static paths.
+- [x] **Step 2: Django & Django REST Framework Backend Setup**
+  - Python virtual environment setup (`backend/venv`).
+  - Installed dependencies: `Django`, `djangorestframework`, `djangorestframework-simplejwt`, `django-cors-headers`, `pillow`, `python-dotenv`, `razorpay`, `django-filter`.
+  - Configured Django `settings.py`, SQLite database (DB Browser compatible), CORS headers, JWT settings, and media/static paths.
+  - Initialized modular apps: `accounts`, `products`, `orders`, `payments`, `common`.
+  - Added centralized health check endpoint (`/api/health/`) and automated test suite.
 - [ ] **Step 3: Custom User Model & Role-Based Authentication**
   - Implement custom `User` model inheriting `AbstractBaseUser` / `PermissionsMixin`.
   - Separate roles: `ADMIN` vs `CUSTOMER`.
