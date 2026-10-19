@@ -89,6 +89,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+# Custom User Model
+AUTH_USER_MODEL = 'accounts.User'
+
+
 
 # Database Configuration
 # Uses SQLite3 by default (Fully compatible with DB Browser for SQLite)
