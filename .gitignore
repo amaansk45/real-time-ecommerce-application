@@ -1,0 +1,82 @@
+# ==========================================
+# Indian Bazar - Comprehensive Git Ignore
+# ==========================================
+
+# Environment variables & secrets
+.env
+.env.local
+.env.*.local
+*.env
+
+# Python / Django
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+env.bak/
+venv.bak/
+
+# Database (SQLite & DB Browser)
+*.sqlite3
+*.db
+db.sqlite3
+*.sqlite3-journal
+
+# Django Media & Static collected
+backend/media/*
+!backend/media/.gitkeep
+backend/static_collected/
+
+# Node.js / Vite / Frontend
+node_modules/
+frontend/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+frontend/dist/
+frontend/dist-ssr/
+*.local
+
+# Editor & IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Testing & Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Logs
+logs/
+*.log
