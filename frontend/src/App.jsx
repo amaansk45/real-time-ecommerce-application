@@ -8,6 +8,7 @@ import { ProtectedRoute, AdminRoute, PublicOnlyRoute } from './routes/RouteGuard
 // Pages
 import { HomePage } from './pages/customer/HomePage';
 import { ShopPage } from './pages/customer/ShopPage';
+import { ProductDetailPage } from './pages/customer/ProductDetailPage';
 import { LoginPage } from './pages/customer/LoginPage';
 import { RegisterPage } from './pages/customer/RegisterPage';
 import { ProfilePage } from './pages/customer/ProfilePage';
@@ -24,6 +25,8 @@ export const App = () => {
           <Route path="/" element={<CustomerLayout />}>
             <Route index element={<HomePage />} />
             <Route path="shop" element={<ShopPage />} />
+            <Route path="product/:slug" element={<ProductDetailPage />} />
+
 
             {/* Public Only Auth Routes */}
             <Route
