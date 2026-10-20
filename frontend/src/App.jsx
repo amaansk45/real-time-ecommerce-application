@@ -18,6 +18,7 @@ import { AddressesPage } from './pages/customer/AddressesPage';
 import { CartPage } from './pages/customer/CartPage';
 import { WishlistPage } from './pages/customer/WishlistPage';
 import { CheckoutPage } from './pages/customer/CheckoutPage';
+import { RazorpayPaymentPage } from './pages/customer/RazorpayPaymentPage';
 import { OrdersPage } from './pages/customer/OrdersPage';
 import { OrderDetailPage } from './pages/customer/OrderDetailPage';
 import { OrderSuccessPage } from './pages/customer/OrderSuccessPage';
@@ -110,6 +111,14 @@ export const App = () => {
               element={
                 <ProtectedRoute>
                   <CheckoutPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="payment/razorpay/:orderNumber"
+              element={
+                <ProtectedRoute>
+                  <RazorpayPaymentPage />
                 </ProtectedRoute>
               }
             />
