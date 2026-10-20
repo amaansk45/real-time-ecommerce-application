@@ -13,6 +13,7 @@ urlpatterns = [
 
     # Common / System API (Health check & Meta)
     path('api/', include('apps.common.urls')),
+    path('api/common/', include('apps.common.urls')),
 
     # Accounts & Authentication API
     path('api/auth/', include('apps.accounts.urls')),

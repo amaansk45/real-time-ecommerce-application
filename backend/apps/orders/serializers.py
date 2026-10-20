@@ -4,7 +4,11 @@ from apps.accounts.models import Address
 from .models import Coupon, Cart, CartItem, Wishlist, Order, OrderItem
 
 
+from django.utils import timezone
+
 class CouponSerializer(serializers.ModelSerializer):
+    valid_to = serializers.DateTimeField(required=False)
+
     class Meta:
         model = Coupon
         fields = (
@@ -14,9 +18,19 @@ class CouponSerializer(serializers.ModelSerializer):
             'discount_value',
             'min_order_amount',
             'max_discount_amount',
+            'valid_from',
             'valid_to',
             'is_active',
+            'usage_limit',
+            'used_count',
+            'created_at',
         )
+        read_only_fields = ('id', 'used_count', 'created_at')
+
+    def create(self, validated_data):
+        if 'valid_to' not in validated_data or not validated_data['valid_to']:
+            validated_data['valid_to'] = timezone.now() + timezone.timedelta(days=365)
+        return super().create(validated_data)
 
 
 class CartItemSerializer(serializers.ModelSerializer):

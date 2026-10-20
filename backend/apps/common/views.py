@@ -62,7 +62,7 @@ class AdminDashboardMetricsView(APIView):
         delivered_orders = Order.objects.filter(status=Order.OrderStatus.DELIVERED).count()
         cancelled_orders = Order.objects.filter(status=Order.OrderStatus.CANCELLED).count()
 
-        total_customers = User.objects.filter(role=User.Role.CUSTOMER).count()
+        total_customers = User.objects.filter(role=User.RoleChoices.CUSTOMER).count()
         total_products = Product.objects.count()
         low_stock_count = Product.objects.filter(stock_quantity__lte=5, stock_quantity__gt=0).count()
         out_of_stock_count = Product.objects.filter(stock_quantity=0).count()
