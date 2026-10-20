@@ -141,9 +141,16 @@ real-time-ecommerce-application/
   - 47 automated tests passing across the backend test suite.
   - Frontend services (`orderService`, `paymentService`), global contexts (`CartContext`, `WishlistContext`).
   - Frontend storefront pages: `CartPage`, `WishlistPage`, `CheckoutPage` (with address picker & modal), `OrderSuccessPage`, `OrdersPage`, and `OrderDetailPage` with 5-step visual tracking timeline.
-- [ ] **Step 7: Admin Dashboard & Management System**
-  - Single-store admin dashboard with metrics (Total Sales, Revenue, Orders, Low Stock).
-  - Admin CRUD tables for Products, Categories, Orders, and Coupons.
+- [x] **Step 7: Admin Dashboard & Management System**
+  - Live KPI metrics endpoint `/api/common/admin/metrics/`: Total Gross Revenue, Lifetime Orders, Customer count, Active Products, and Low Stock inventory warnings.
+  - 7-Day Revenue Velocity analytics & fulfillment stage breakdown charts.
+  - Complete Product Inventory management (`/admin/products`): Full CRUD, image URL binding, price & offer rates, stock stepper, and low-stock filters.
+  - Category & Subcategory taxonomy management (`/admin/categories`): Full CRUD, hierarchy binding, display order, and featured flags.
+  - Order Fulfillment & Processing center (`/admin/orders`): Quick stage advancement (`PENDING` -> `CONFIRMED` -> `PROCESSING` -> `SHIPPED` -> `DELIVERED`), courier waybill tracking number attachment, payment status toggle, and full customer package inspection modal.
+  - Registered Customers directory (`/admin/customers`): Accounts, join dates, and verification status.
+  - Promotional Coupons management (`/admin/coupons`): Percentage & flat rate discount creator, minimum order amount thresholds, and usage limits.
+  - Sales & Revenue Analytics reports (`/admin/reports`): Gross sales, Average Order Value (AOV), cancellation rate, and printable summaries.
+  - 51 automated unit and integration tests passing across all backend apps.
 - [ ] **Step 8: Testing, Security, Polish & Deployment Preparation**
   - Automated tests for Auth, Products, Orders, and Payments.
   - Production security checklist, logging, error handling, and documentation.
