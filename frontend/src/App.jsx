@@ -22,6 +22,12 @@ import { OrdersPage } from './pages/customer/OrdersPage';
 import { OrderDetailPage } from './pages/customer/OrderDetailPage';
 import { OrderSuccessPage } from './pages/customer/OrderSuccessPage';
 import { DashboardPage as AdminDashboardPage } from './pages/admin/DashboardPage';
+import { AdminProductsPage } from './pages/admin/AdminProductsPage';
+import { AdminCategoriesPage } from './pages/admin/AdminCategoriesPage';
+import { AdminOrdersPage } from './pages/admin/AdminOrdersPage';
+import { AdminCustomersPage } from './pages/admin/AdminCustomersPage';
+import { AdminCouponsPage } from './pages/admin/AdminCouponsPage';
+import { AdminReportsPage } from './pages/admin/AdminReportsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 export const App = () => {
@@ -120,60 +126,12 @@ export const App = () => {
           >
             <Route index element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="dashboard" element={<AdminDashboardPage />} />
-            <Route
-              path="products"
-              element={
-                <div className="bg-white rounded-3xl p-8 shadow-card border border-slate-200/80">
-                  <h2 className="text-xl font-bold font-heading">Product Inventory Management</h2>
-                  <p className="text-sm text-slate-500 mt-1">Product CRUD management will be activated in Step 5.</p>
-                </div>
-              }
-            />
-            <Route
-              path="categories"
-              element={
-                <div className="bg-white rounded-3xl p-8 shadow-card border border-slate-200/80">
-                  <h2 className="text-xl font-bold font-heading">Category & Subcategory Hierarchy</h2>
-                  <p className="text-sm text-slate-500 mt-1">Category management will be activated in Step 5.</p>
-                </div>
-              }
-            />
-            <Route
-              path="orders"
-              element={
-                <div className="bg-white rounded-3xl p-8 shadow-card border border-slate-200/80">
-                  <h2 className="text-xl font-bold font-heading">Order Processing & Shipping Status</h2>
-                  <p className="text-sm text-slate-500 mt-1">Order management will be activated in Step 6 & 7.</p>
-                </div>
-              }
-            />
-            <Route
-              path="customers"
-              element={
-                <div className="bg-white rounded-3xl p-8 shadow-card border border-slate-200/80">
-                  <h2 className="text-xl font-bold font-heading">Customer Accounts & Insights</h2>
-                  <p className="text-sm text-slate-500 mt-1">Connected to /api/auth/admin/customers/ endpoint.</p>
-                </div>
-              }
-            />
-            <Route
-              path="coupons"
-              element={
-                <div className="bg-white rounded-3xl p-8 shadow-card border border-slate-200/80">
-                  <h2 className="text-xl font-bold font-heading">Promotional Coupons & Festive Discounts</h2>
-                  <p className="text-sm text-slate-500 mt-1">Coupon management will be activated in Step 6 & 7.</p>
-                </div>
-              }
-            />
-            <Route
-              path="reports"
-              element={
-                <div className="bg-white rounded-3xl p-8 shadow-card border border-slate-200/80">
-                  <h2 className="text-xl font-bold font-heading">Revenue & Sales Analytics</h2>
-                  <p className="text-sm text-slate-500 mt-1">Analytical reports will be activated in Step 7.</p>
-                </div>
-              }
-            />
+            <Route path="products" element={<AdminProductsPage />} />
+            <Route path="categories" element={<AdminCategoriesPage />} />
+            <Route path="orders" element={<AdminOrdersPage />} />
+            <Route path="customers" element={<AdminCustomersPage />} />
+            <Route path="coupons" element={<AdminCouponsPage />} />
+            <Route path="reports" element={<AdminReportsPage />} />
           </Route>
 
           {/* 404 Not Found Catch-All */}
