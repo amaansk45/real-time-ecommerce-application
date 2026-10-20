@@ -27,7 +27,7 @@ import { RazorpayModal } from '../../components/customer/RazorpayModal';
 export const CheckoutPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { cart, itemsCount, subtotal, shippingFee, discountAmount, grandTotal, appliedCoupon, fetchCart } = useCart();
+  const { cart, loading: cartLoading, itemsCount, subtotal, shippingFee, discountAmount, grandTotal, appliedCoupon, fetchCart } = useCart();
 
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
@@ -54,7 +54,7 @@ export const CheckoutPage = () => {
   // Processing state
   const [processing, setProcessing] = useState(false);
   const [checkoutError, setCheckoutError] = useState('');
-  const [mockModalOpen, setMockModalOpen] = useState(false);
+  const [razorpayModalOpen, setRazorpayModalOpen] = useState(false);
   const [activePendingOrder, setActivePendingOrder] = useState(null);
   const [activeRazorpayData, setActiveRazorpayData] = useState(null);
 
@@ -148,7 +148,7 @@ export const CheckoutPage = () => {
       setCheckoutError(err.response?.data?.detail || 'Payment verification failed. Please contact support.');
     } finally {
       setProcessing(false);
-      setMockModalOpen(false);
+      setRazorpayModalOpen(false);
     }
   };
 
@@ -244,6 +244,15 @@ export const CheckoutPage = () => {
       setProcessing(false);
     }
   };
+
+  if (cartLoading && !cart) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-28 text-center space-y-4">
+        <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+        <p className="text-sm font-medium text-slate-500">Retrieving your shopping bag...</p>
+      </div>
+    );
+  }
 
   if (!cart || itemsCount === 0) {
     return (
@@ -525,28 +534,29 @@ export const CheckoutPage = () => {
 
             {/* Mini Items Preview */}
             <div className="max-h-56 overflow-y-auto space-y-3 pr-1 divide-y divide-slate-100">
-              {cart.items.map((item) => (
+              {cart?.items?.map((item) => (
                 <div key={item.id} className="pt-3 first:pt-0 flex items-center gap-3">
                   <div className="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200">
                     <img
                       src={
+                        item.product?.primary_image_url ||
                         item.product_image ||
                         'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=200&q=80'
                       }
-                      alt={item.product_title}
+                      alt={item.product?.title || item.product_title || 'Product'}
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-bold text-slate-900 truncate">
-                      {item.product_title}
+                      {item.product?.title || item.product_title || 'Item'}
                     </p>
                     <p className="text-[10px] text-slate-400">
                       Qty: {item.quantity} × {formatCurrency(item.unit_price)}
                     </p>
                   </div>
                   <span className="text-xs font-bold font-heading text-slate-900">
-                    {formatCurrency(item.total_price)}
+                    {formatCurrency(item.subtotal || item.total_price)}
                   </span>
                 </div>
               ))}
