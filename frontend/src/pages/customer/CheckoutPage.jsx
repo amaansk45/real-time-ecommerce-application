@@ -22,6 +22,7 @@ import { orderService } from '../../services/orderService';
 import { paymentService } from '../../services/paymentService';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
+import { RazorpayModal } from '../../components/customer/RazorpayModal';
 
 export const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -231,13 +232,11 @@ export const CheckoutPage = () => {
         }
       }
 
-      // Direct payment without inputs (Sandbox / Instant One-Click Payment)
-      await verifyAndFinishOrder(
-        order.order_number,
-        rzpRes.razorpay_order_id || `order_mock_${Date.now()}`,
-        `pay_instant_${Date.now()}`,
-        'mock_signature_valid'
-      );
+      // Open authentic Razorpay simulated gateway modal with UPI, Cards, Netbanking & Payment Successful animation
+      setActivePendingOrder(order);
+      setActiveRazorpayData(rzpRes);
+      setRazorpayModalOpen(true);
+      setProcessing(false);
     } catch (err) {
       console.error('Checkout error:', err);
       const msg = err.response?.data?.detail || 'Order checkout failed. Please verify stock and address.';
@@ -730,59 +729,30 @@ export const CheckoutPage = () => {
         </div>
       )}
 
-      {/* Razorpay Sandbox Mock Simulation Modal (Active for dev test keys) */}
-      {mockModalOpen && activePendingOrder && activeRazorpayData && (
-        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-100 space-y-6 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-primary-50 text-primary-600 flex items-center justify-center mx-auto shadow-sm">
-              <CreditCard className="w-8 h-8" />
-            </div>
-
-            <div className="space-y-1">
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wide">
-                Razorpay Test Sandbox
-              </span>
-              <h3 className="font-heading font-extrabold text-xl text-slate-900 mt-2">
-                Simulate Payment for #{activePendingOrder.order_number}
-              </h3>
-              <p className="text-xs text-slate-500">
-                Amount: <strong className="text-slate-900">{formatCurrency(activePendingOrder.total_amount)}</strong>
-              </p>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left text-xs space-y-1.5 font-mono text-slate-600">
-              <p>Gateway Order: {activeRazorpayData.razorpay_order_id}</p>
-              <p>Customer: {activeRazorpayData.customer_name}</p>
-              <p>Status: Ready for 256-bit signature validation</p>
-            </div>
-
-            <div className="space-y-3">
-              <Button
-                size="lg"
-                className="w-full bg-emerald-600 hover:bg-emerald-700 shadow-md shadow-emerald-600/20"
-                onClick={() =>
-                  verifyAndFinishOrder(
-                    activePendingOrder.order_number,
-                    activeRazorpayData.razorpay_order_id,
-                    `pay_mock_${Date.now()}`,
-                    'mock_signature_valid'
-                  )
-                }
-              >
-                Simulate Successful Payment ✓
-              </Button>
-
-              <button
-                type="button"
-                onClick={() => setMockModalOpen(false)}
-                className="text-xs font-semibold text-slate-500 hover:text-slate-800"
-              >
-                Cancel / Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Authentic Razorpay UI Gateway Modal */}
+      <RazorpayModal
+        isOpen={razorpayModalOpen}
+        onClose={() => {
+          setRazorpayModalOpen(false);
+          setProcessing(false);
+          setCheckoutError('Payment cancelled. Your order has been saved and can be paid anytime from My Orders.');
+        }}
+        onSuccess={async (paymentData) => {
+          setRazorpayModalOpen(false);
+          setProcessing(true);
+          await verifyAndFinishOrder(
+            activePendingOrder.order_number,
+            paymentData.razorpay_order_id,
+            paymentData.razorpay_payment_id,
+            paymentData.razorpay_signature
+          );
+        }}
+        amount={activePendingOrder?.total_amount || grandTotal}
+        orderNumber={activePendingOrder?.order_number}
+        customerName={activePendingOrder?.shipping_full_name || user?.first_name}
+        customerEmail={user?.email}
+        customerPhone={activePendingOrder?.shipping_phone || user?.phone_number}
+      />
     </div>
   );
 };
