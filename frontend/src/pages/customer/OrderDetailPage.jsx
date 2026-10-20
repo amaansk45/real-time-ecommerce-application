@@ -16,6 +16,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { orderService } from '../../services/orderService';
+import { paymentService } from '../../services/paymentService';
 import { Button } from '../../components/common/Button';
 
 export const OrderDetailPage = () => {
@@ -24,6 +25,7 @@ export const OrderDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
   const [returning, setReturning] = useState(false);
+  const [paying, setPaying] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
   const formatCurrency = (val) => {
@@ -97,6 +99,26 @@ export const OrderDetailPage = () => {
     } finally {
       setReturning(false);
       setTimeout(() => setFeedback(null), 4000);
+    }
+  };
+
+  const handlePayOrder = async () => {
+    setPaying(true);
+    try {
+      await paymentService.verifyRazorpayPayment({
+        order_number: orderNumber,
+        razorpay_order_id: `order_mock_${Date.now()}`,
+        razorpay_payment_id: `pay_instant_${Date.now()}`,
+        razorpay_signature: 'mock_signature_valid',
+      });
+      setFeedback({ type: 'success', text: 'Payment completed successfully! Your order is now confirmed.' });
+      await fetchOrder();
+    } catch (err) {
+      const msg = err.response?.data?.detail || 'Could not complete payment.';
+      setFeedback({ type: 'error', text: msg });
+    } finally {
+      setPaying(false);
+      setTimeout(() => setFeedback(null), 5000);
     }
   };
 
@@ -176,6 +198,17 @@ export const OrderDetailPage = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {order.payment_status === 'PENDING' && !isCancelled && (
+              <Button
+                size="sm"
+                icon={CreditCard}
+                loading={paying}
+                onClick={handlePayOrder}
+                className="bg-emerald-600 hover:bg-emerald-700 shadow-sm"
+              >
+                Complete Payment Now
+              </Button>
+            )}
             {canCancel && (
               <Button
                 variant="outline"

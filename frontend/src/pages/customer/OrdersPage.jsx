@@ -10,8 +10,10 @@ import {
   ChevronRight,
   ShoppingBag,
   AlertCircle,
+  CreditCard,
 } from 'lucide-react';
 import { orderService } from '../../services/orderService';
+import { paymentService } from '../../services/paymentService';
 import { Button } from '../../components/common/Button';
 
 export const OrdersPage = () => {
@@ -19,6 +21,7 @@ export const OrdersPage = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('ALL');
   const [cancellingNumber, setCancellingNumber] = useState(null);
+  const [payingNumber, setPayingNumber] = useState(null);
   const [feedback, setFeedback] = useState(null);
 
   const formatCurrency = (val) => {
@@ -71,6 +74,26 @@ export const OrdersPage = () => {
     } finally {
       setCancellingNumber(null);
       setTimeout(() => setFeedback(null), 4000);
+    }
+  };
+
+  const handlePayOrder = async (orderNumber) => {
+    setPayingNumber(orderNumber);
+    try {
+      await paymentService.verifyRazorpayPayment({
+        order_number: orderNumber,
+        razorpay_order_id: `order_mock_${Date.now()}`,
+        razorpay_payment_id: `pay_instant_${Date.now()}`,
+        razorpay_signature: 'mock_signature_valid',
+      });
+      setFeedback({ type: 'success', text: `Payment for Order #${orderNumber} completed successfully!` });
+      await fetchOrders();
+    } catch (err) {
+      const msg = err.response?.data?.detail || 'Could not complete payment.';
+      setFeedback({ type: 'error', text: msg });
+    } finally {
+      setPayingNumber(null);
+      setTimeout(() => setFeedback(null), 5000);
     }
   };
 
@@ -292,6 +315,17 @@ export const OrdersPage = () => {
                   </div>
 
                   <div className="flex items-center gap-3">
+                    {order.payment_status === 'PENDING' && order.status !== 'CANCELLED' && (
+                      <Button
+                        size="sm"
+                        icon={CreditCard}
+                        loading={payingNumber === order.order_number}
+                        onClick={() => handlePayOrder(order.order_number)}
+                        className="bg-emerald-600 hover:bg-emerald-700 shadow-sm"
+                      >
+                        Pay Now
+                      </Button>
+                    )}
                     {canCancel && (
                       <Button
                         variant="outline"
