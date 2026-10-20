@@ -15,6 +15,7 @@ import { LoginPage } from './pages/customer/LoginPage';
 import { RegisterPage } from './pages/customer/RegisterPage';
 import { ProfilePage } from './pages/customer/ProfilePage';
 import { AddressesPage } from './pages/customer/AddressesPage';
+import { CartPage } from './pages/customer/CartPage';
 import { DashboardPage as AdminDashboardPage } from './pages/admin/DashboardPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
@@ -87,15 +88,7 @@ export const App = () => {
                 </div>
               }
             />
-            <Route
-              path="cart"
-              element={
-                <div className="max-w-5xl mx-auto py-16 px-4 text-center">
-                  <h2 className="text-2xl font-bold font-heading">Shopping Cart</h2>
-                  <p className="text-sm text-slate-500 mt-2">Cart drawer and checkout will be activated in Step 6.</p>
-                </div>
-              }
-            />
+            <Route path="cart" element={<CartPage />} />
           </Route>
 
           {/* Protected Store Administrator Layout */}
