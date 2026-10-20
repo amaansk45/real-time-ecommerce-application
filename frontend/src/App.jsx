@@ -17,6 +17,7 @@ import { ProfilePage } from './pages/customer/ProfilePage';
 import { AddressesPage } from './pages/customer/AddressesPage';
 import { CartPage } from './pages/customer/CartPage';
 import { WishlistPage } from './pages/customer/WishlistPage';
+import { CheckoutPage } from './pages/customer/CheckoutPage';
 import { DashboardPage as AdminDashboardPage } from './pages/admin/DashboardPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
@@ -82,6 +83,14 @@ export const App = () => {
             />
             <Route path="wishlist" element={<WishlistPage />} />
             <Route path="cart" element={<CartPage />} />
+            <Route
+              path="checkout"
+              element={
+                <ProtectedRoute>
+                  <CheckoutPage />
+                </ProtectedRoute>
+              }
+            />
           </Route>
 
           {/* Protected Store Administrator Layout */}
