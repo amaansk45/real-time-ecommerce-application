@@ -6,11 +6,13 @@ from .views import (
     CheckoutView,
     OrderViewSet,
     AdminOrderViewSet,
+    AdminCouponViewSet,
     OrderStatusHealthView,
 )
 
 router = DefaultRouter()
 router.register(r'admin/orders', AdminOrderViewSet, basename='admin-order')
+router.register(r'admin/coupons', AdminCouponViewSet, basename='admin-coupon')
 router.register(r'', OrderViewSet, basename='order')
 
 urlpatterns = [

@@ -345,6 +345,80 @@ class AdminOrderViewSet(viewsets.ModelViewSet):
     search_fields = ('order_number', 'customer__email', 'shipping_phone', 'tracking_number')
     ordering = ('-created_at',)
 
+    @action(detail=True, methods=['post'], url_path='update-status')
+    def update_status(self, request, pk=None):
+        """Update order fulfillment status and optional tracking number."""
+        order = self.get_object()
+        new_status = request.data.get('status')
+        tracking_number = request.data.get('tracking_number')
+        estimated_delivery = request.data.get('estimated_delivery_date')
+
+        if not new_status or new_status not in Order.OrderStatus.values:
+            return Response(
+                {'detail': f'Valid status required. Choices: {Order.OrderStatus.values}'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # If transitioning to CANCELLED, restore stock
+        if new_status == Order.OrderStatus.CANCELLED and order.status != Order.OrderStatus.CANCELLED:
+            with transaction.atomic():
+                order.status = new_status
+                if tracking_number:
+                    order.tracking_number = tracking_number
+                if estimated_delivery:
+                    order.estimated_delivery_date = estimated_delivery
+                order.save()
+
+                for item in order.items.all():
+                    if item.product:
+                        item.product.stock_quantity += item.quantity
+                        item.product.save()
+        else:
+            order.status = new_status
+            if tracking_number:
+                order.tracking_number = tracking_number
+            if estimated_delivery:
+                order.estimated_delivery_date = estimated_delivery
+            order.save()
+
+        return Response(
+            {'message': f'Order status updated to {new_status}.', 'order': OrderSerializer(order).data},
+            status=status.HTTP_200_OK
+        )
+
+    @action(detail=True, methods=['post'], url_path='update-payment')
+    def update_payment(self, request, pk=None):
+        """Update payment status."""
+        order = self.get_object()
+        new_payment_status = request.data.get('payment_status')
+
+        if not new_payment_status or new_payment_status not in Order.PaymentStatus.values:
+            return Response(
+                {'detail': f'Valid payment status required. Choices: {Order.PaymentStatus.values}'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        order.payment_status = new_payment_status
+        order.save()
+
+        return Response(
+            {'message': f'Payment status updated to {new_payment_status}.', 'order': OrderSerializer(order).data},
+            status=status.HTTP_200_OK
+        )
+
+
+class AdminCouponViewSet(viewsets.ModelViewSet):
+    """
+    Store Administrator ViewSet for managing promotional discount coupons.
+    """
+    permission_classes = (IsAuthenticated, IsAdminUserRole)
+    queryset = Coupon.objects.all().order_by('-created_at')
+    serializer_class = CouponSerializer
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    search_fields = ('code', 'description')
+    ordering = ('-created_at',)
+
+
 
 class OrderStatusHealthView(APIView):
     """
