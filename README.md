@@ -131,11 +131,16 @@ real-time-ecommerce-application/
   - Idempotent `python manage.py seed_products` seeder with authentic Indian products (Banarasi Sarees, Kashmiri Saffron, Tellicherry Pepper, Jaipur Pottery, Mamra Almonds).
   - 37 automated tests passing cleanly across the backend test suite.
   - Frontend `ProductCard`, live `ShopPage` catalog with sidebar filters, and `ProductDetailPage` with gallery and review form.
-- [ ] **Step 6: Cart, Wishlist, Checkout, Orders & Payments**
-  - Cart, CartItem, Wishlist, Coupon, Order, OrderItem models.
-  - Razorpay order creation and HMAC-SHA256 signature verification.
-  - COD payment workflow.
-  - Order status tracking, order cancellation, and customer order history.
+- [x] **Step 6: Cart, Wishlist, Checkout, Orders & Payments**
+  - Implemented `Cart`, `CartItem`, `Wishlist`, `Coupon`, `Order`, `OrderItem`, and `PaymentTransaction` models in SQLite.
+  - Cart features: quantity steppers, item removal, cart clearing, automatic delivery fee computation (Free over ₹999), and coupon discount calculations (Percentage and Flat rate).
+  - Razorpay Online Payments: server-side order generation (amount in paise), HMAC-SHA256 signature verification, and dev test sandbox simulation.
+  - Cash on Delivery (COD) order placement workflow.
+  - Atomic stock management (`@transaction.atomic`): decrements inventory on checkout and restores stock on order cancellation.
+  - Seeder command `python manage.py seed_coupons` with festive promo codes (`FESTIVE20`, `WELCOME100`, `BAZAR50`).
+  - 47 automated tests passing across the backend test suite.
+  - Frontend services (`orderService`, `paymentService`), global contexts (`CartContext`, `WishlistContext`).
+  - Frontend storefront pages: `CartPage`, `WishlistPage`, `CheckoutPage` (with address picker & modal), `OrderSuccessPage`, `OrdersPage`, and `OrderDetailPage` with 5-step visual tracking timeline.
 - [ ] **Step 7: Admin Dashboard & Management System**
   - Single-store admin dashboard with metrics (Total Sales, Revenue, Orders, Low Stock).
   - Admin CRUD tables for Products, Categories, Orders, and Coupons.
