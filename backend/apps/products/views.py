@@ -9,6 +9,8 @@ from .filters import ProductFilter
 from .serializers import (
     CategorySerializer,
     SubcategorySerializer,
+    AdminCategorySerializer,
+    AdminSubcategorySerializer,
     ProductListSerializer,
     ProductDetailSerializer,
     ProductCreateUpdateSerializer,
@@ -116,6 +118,30 @@ class AdminProductViewSet(viewsets.ModelViewSet):
         if self.action == 'retrieve':
             return ProductDetailSerializer
         return ProductListSerializer
+
+
+class AdminCategoryViewSet(viewsets.ModelViewSet):
+    """
+    Store Administrator ViewSet for Category CRUD operations.
+    """
+    permission_classes = (IsAuthenticated, IsAdminUserRole)
+    queryset = Category.objects.all().prefetch_related('subcategories', 'products').order_by('order', 'name')
+    serializer_class = AdminCategorySerializer
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    search_fields = ('name', 'description')
+    ordering = ('order', 'name')
+
+
+class AdminSubcategoryViewSet(viewsets.ModelViewSet):
+    """
+    Store Administrator ViewSet for Subcategory CRUD operations.
+    """
+    permission_classes = (IsAuthenticated, IsAdminUserRole)
+    queryset = Subcategory.objects.all().select_related('category').order_by('category', 'name')
+    serializer_class = AdminSubcategorySerializer
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    search_fields = ('name', 'description', 'category__name')
+    ordering = ('category', 'name')
 
 
 class ProductStatusView(viewsets.ViewSet):

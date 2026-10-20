@@ -5,10 +5,15 @@
   "description": "Indian Bazar Full-Stack E-Commerce Workspace Root",
   "scripts": {
     "dev": "npm --prefix frontend run dev",
+    "dev:backend": "backend\\venv\\Scripts\\python.exe backend/manage.py runserver 127.0.0.1:8000",
+    "dev:all": "concurrently -n \"FRONTEND,BACKEND\" -c \"cyan,magenta\" \"npm run dev\" \"npm run dev:backend\"",
     "build": "npm --prefix frontend run build",
     "preview": "npm --prefix frontend run preview",
-    "backend": "python backend/manage.py runserver",
-    "migrate": "python backend/manage.py migrate",
-    "test:backend": "python backend/manage.py test"
+    "backend": "backend\\venv\\Scripts\\python.exe backend/manage.py runserver 127.0.0.1:8000",
+    "migrate": "backend\\venv\\Scripts\\python.exe backend/manage.py migrate",
+    "test:backend": "backend\\venv\\Scripts\\python.exe backend/manage.py test"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
   }
 }

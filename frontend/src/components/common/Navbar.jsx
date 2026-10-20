@@ -14,9 +14,13 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
 
 export const Navbar = () => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { itemsCount } = useCart();
+  const { wishlistCount } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -90,6 +94,11 @@ export const Navbar = () => {
               title="Wishlist"
             >
               <Heart className="w-5 h-5" />
+              {wishlistCount > 0 && (
+                <span className="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 bg-rose-600 text-white rounded-full text-[10px] font-black flex items-center justify-center shadow-sm animate-in zoom-in-50 duration-200">
+                  {wishlistCount > 99 ? '99+' : wishlistCount}
+                </span>
+              )}
               <span className="sr-only">Wishlist</span>
             </Link>
 
@@ -100,9 +109,11 @@ export const Navbar = () => {
               title="Cart"
             >
               <ShoppingBag className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-primary-600 text-white rounded-full text-[10px] font-bold flex items-center justify-center">
-                0
-              </span>
+              {itemsCount > 0 && (
+                <span className="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 bg-primary-600 text-white rounded-full text-[10px] font-black flex items-center justify-center shadow-sm animate-in zoom-in-50 duration-200">
+                  {itemsCount > 99 ? '99+' : itemsCount}
+                </span>
+              )}
               <span className="sr-only">Shopping Cart</span>
             </Link>
 

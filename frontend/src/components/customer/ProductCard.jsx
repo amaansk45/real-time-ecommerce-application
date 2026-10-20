@@ -1,8 +1,32 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Star, ShoppingBag, MapPin, Heart } from 'lucide-react';
+import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
 
-export const ProductCard = ({ product, onAddToCart, onToggleWishlist, isWishlisted = false }) => {
+export const ProductCard = ({ product, onAddToCart, onToggleWishlist, isWishlisted }) => {
+  const { addToCart } = useCart();
+  const { toggleWishlist, isWishlisted: checkWishlist } = useWishlist();
+
+  const activeIsWishlisted =
+    typeof isWishlisted === 'boolean' ? isWishlisted : checkWishlist(product.id);
+
+  const handleAdd = () => {
+    if (onAddToCart) {
+      onAddToCart(product);
+    } else {
+      addToCart(product.id, 1);
+    }
+  };
+
+  const handleToggle = () => {
+    if (onToggleWishlist) {
+      onToggleWishlist(product);
+    } else {
+      toggleWishlist(product);
+    }
+  };
+
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -44,11 +68,11 @@ export const ProductCard = ({ product, onAddToCart, onToggleWishlist, isWishlist
         {/* Wishlist Button */}
         <button
           type="button"
-          onClick={() => onToggleWishlist && onToggleWishlist(product)}
+          onClick={handleToggle}
           className="absolute top-3 right-3 p-2 rounded-full bg-white/90 backdrop-blur-md text-slate-500 hover:text-red-500 shadow-sm transition-colors z-10"
           title="Save to Wishlist"
         >
-          <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-red-500 text-red-500' : ''}`} />
+          <Heart className={`w-4 h-4 ${activeIsWishlisted ? 'fill-red-500 text-red-500' : ''}`} />
         </button>
 
         {/* Origin Tag */}
@@ -104,7 +128,7 @@ export const ProductCard = ({ product, onAddToCart, onToggleWishlist, isWishlist
           {product.is_in_stock ? (
             <button
               type="button"
-              onClick={() => onAddToCart && onAddToCart(product)}
+              onClick={handleAdd}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold shadow-md shadow-primary-500/20 active:scale-95 transition-all"
             >
               <ShoppingBag className="w-3.5 h-3.5" />
