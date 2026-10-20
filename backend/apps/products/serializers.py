@@ -133,10 +133,55 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         )
 
 
+class AdminCategorySerializer(serializers.ModelSerializer):
+    subcategories = SubcategorySerializer(many=True, read_only=True)
+    products_count = serializers.IntegerField(source='products.count', read_only=True)
+
+    class Meta:
+        model = Category
+        fields = (
+            'id',
+            'name',
+            'slug',
+            'description',
+            'image',
+            'image_url',
+            'is_featured',
+            'order',
+            'subcategories',
+            'products_count',
+            'created_at',
+            'updated_at',
+        )
+        read_only_fields = ('id', 'slug', 'created_at', 'updated_at')
+
+
+class AdminSubcategorySerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source='category.name', read_only=True)
+    products_count = serializers.IntegerField(source='products.count', read_only=True)
+
+    class Meta:
+        model = Subcategory
+        fields = (
+            'id',
+            'category',
+            'category_name',
+            'name',
+            'slug',
+            'description',
+            'products_count',
+            'created_at',
+        )
+        read_only_fields = ('id', 'slug', 'created_at')
+
+
 class ProductCreateUpdateSerializer(serializers.ModelSerializer):
     """
     Serializer used by store administrators to create and update products.
+    Supports inline initial image_url binding.
     """
+    image_url = serializers.CharField(write_only=True, required=False, allow_blank=True)
+
     class Meta:
         model = Product
         fields = (
@@ -155,5 +200,26 @@ class ProductCreateUpdateSerializer(serializers.ModelSerializer):
             'unit',
             'is_active',
             'is_featured',
+            'image_url',
         )
         read_only_fields = ('id', 'slug')
+
+    def create(self, validated_data):
+        image_url = validated_data.pop('image_url', '').strip()
+        product = super().create(validated_data)
+        if image_url:
+            ProductImage.objects.create(product=product, image_url=image_url, is_primary=True)
+        return product
+
+    def update(self, instance, validated_data):
+        image_url = validated_data.pop('image_url', None)
+        product = super().update(instance, validated_data)
+        if image_url is not None and image_url.strip():
+            primary_img = product.images.filter(is_primary=True).first()
+            if primary_img:
+                primary_img.image_url = image_url.strip()
+                primary_img.save()
+            else:
+                ProductImage.objects.create(product=product, image_url=image_url.strip(), is_primary=True)
+        return product
+
