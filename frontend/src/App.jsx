@@ -18,6 +18,9 @@ import { AddressesPage } from './pages/customer/AddressesPage';
 import { CartPage } from './pages/customer/CartPage';
 import { WishlistPage } from './pages/customer/WishlistPage';
 import { CheckoutPage } from './pages/customer/CheckoutPage';
+import { OrdersPage } from './pages/customer/OrdersPage';
+import { OrderDetailPage } from './pages/customer/OrderDetailPage';
+import { OrderSuccessPage } from './pages/customer/OrderSuccessPage';
 import { DashboardPage as AdminDashboardPage } from './pages/admin/DashboardPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
@@ -74,10 +77,23 @@ export const App = () => {
               path="orders"
               element={
                 <ProtectedRoute>
-                  <div className="max-w-5xl mx-auto py-16 px-4 text-center">
-                    <h2 className="text-2xl font-bold font-heading">My Orders</h2>
-                    <p className="text-sm text-slate-500 mt-2">Order tracking will be activated in Step 6.</p>
-                  </div>
+                  <OrdersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="orders/:orderNumber"
+              element={
+                <ProtectedRoute>
+                  <OrderDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="order-success/:orderNumber"
+              element={
+                <ProtectedRoute>
+                  <OrderSuccessPage />
                 </ProtectedRoute>
               }
             />
