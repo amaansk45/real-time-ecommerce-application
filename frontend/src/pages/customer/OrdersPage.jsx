@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Package,
   Truck,
@@ -15,9 +15,9 @@ import {
 import { orderService } from '../../services/orderService';
 import { paymentService } from '../../services/paymentService';
 import { Button } from '../../components/common/Button';
-import { RazorpayModal } from '../../components/customer/RazorpayModal';
 
 export const OrdersPage = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('ALL');
@@ -321,8 +321,7 @@ export const OrdersPage = () => {
                       <Button
                         size="sm"
                         icon={CreditCard}
-                        loading={payingNumber === order.order_number}
-                        onClick={() => setRazorpayModalOrder(order)}
+                        onClick={() => navigate(`/payment/razorpay/${order.order_number}`)}
                         className="bg-emerald-600 hover:bg-emerald-700 shadow-sm"
                       >
                         Pay Now
@@ -350,37 +349,6 @@ export const OrdersPage = () => {
             );
           })}
         </div>
-      )}
-
-      {/* Authentic Razorpay UI Gateway Modal for Pending Orders */}
-      {razorpayModalOrder && (
-        <RazorpayModal
-          isOpen={Boolean(razorpayModalOrder)}
-          onClose={() => setRazorpayModalOrder(null)}
-          onSuccess={async (paymentData) => {
-            const orderNum = razorpayModalOrder.order_number;
-            setRazorpayModalOrder(null);
-            setPayingNumber(orderNum);
-            try {
-              await paymentService.verifyRazorpayPayment({
-                order_number: orderNum,
-                razorpay_order_id: paymentData.razorpay_order_id,
-                razorpay_payment_id: paymentData.razorpay_payment_id,
-                razorpay_signature: paymentData.razorpay_signature,
-              });
-              setFeedback({ type: 'success', text: `Payment for Order #${orderNum} completed successfully!` });
-              await fetchOrders();
-            } catch (err) {
-              setFeedback({ type: 'error', text: err.response?.data?.detail || 'Failed to complete payment.' });
-            } finally {
-              setPayingNumber(null);
-              setTimeout(() => setFeedback(null), 5000);
-            }
-          }}
-          amount={razorpayModalOrder.total_amount}
-          orderNumber={razorpayModalOrder.order_number}
-          customerName={razorpayModalOrder.shipping_full_name}
-        />
       )}
     </div>
   );

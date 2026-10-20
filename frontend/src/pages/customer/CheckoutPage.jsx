@@ -180,63 +180,10 @@ export const CheckoutPage = () => {
         return;
       }
 
-      // Online Razorpay / Instant Payment flow
-      const rzpRes = await paymentService.createRazorpayOrder(order.order_number);
-
-      // Check if real live Razorpay API key exists (must start with rzp_ and not contain dummy/indian_bazar)
-      const hasRealRazorpayKey = Boolean(
-        rzpRes.key_id &&
-        !rzpRes.is_mock &&
-        !rzpRes.key_id.toLowerCase().includes('dummy') &&
-        !rzpRes.key_id.toLowerCase().includes('indian_bazar') &&
-        /^rzp_(test|live)_[a-zA-Z0-9]{10,}$/.test(rzpRes.key_id)
-      );
-
-      if (hasRealRazorpayKey) {
-        const isScriptLoaded = await loadRazorpayScript();
-        if (isScriptLoaded) {
-          const options = {
-            key: rzpRes.key_id,
-            amount: rzpRes.amount,
-            currency: rzpRes.currency,
-            name: 'Indian Bazar',
-            description: `Order #${order.order_number} Payment`,
-            order_id: rzpRes.razorpay_order_id,
-            prefill: {
-              name: rzpRes.customer_name || user?.first_name || '',
-              email: rzpRes.customer_email || user?.email || '',
-              contact: rzpRes.customer_phone || '',
-            },
-            theme: {
-              color: '#E8590C', // Indian Bazar Royal Saffron
-            },
-            handler: async function (response) {
-              await verifyAndFinishOrder(
-                order.order_number,
-                response.razorpay_order_id,
-                response.razorpay_payment_id,
-                response.razorpay_signature
-              );
-            },
-            modal: {
-              ondismiss: function () {
-                setProcessing(false);
-                setCheckoutError('Payment cancelled. Your order has been saved and can be paid later.');
-              },
-            },
-          };
-
-          const rzp = new window.Razorpay(options);
-          rzp.open();
-          return;
-        }
-      }
-
-      // Open authentic Razorpay simulated gateway modal with UPI, Cards, Netbanking & Payment Successful animation
-      setActivePendingOrder(order);
-      setActiveRazorpayData(rzpRes);
-      setRazorpayModalOpen(true);
-      setProcessing(false);
+      // Online Razorpay Payment flow: Redirect to Razorpay payment page
+      await paymentService.createRazorpayOrder(order.order_number);
+      await fetchCart();
+      navigate(`/payment/razorpay/${order.order_number}`);
     } catch (err) {
       console.error('Checkout error:', err);
       const msg = err.response?.data?.detail || 'Order checkout failed. Please verify stock and address.';

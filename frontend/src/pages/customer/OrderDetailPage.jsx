@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   Package,
   Truck,
@@ -18,10 +18,10 @@ import {
 import { orderService } from '../../services/orderService';
 import { paymentService } from '../../services/paymentService';
 import { Button } from '../../components/common/Button';
-import { RazorpayModal } from '../../components/customer/RazorpayModal';
 
 export const OrderDetailPage = () => {
   const { orderNumber } = useParams();
+  const navigate = useNavigate();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
@@ -204,8 +204,7 @@ export const OrderDetailPage = () => {
               <Button
                 size="sm"
                 icon={CreditCard}
-                loading={paying}
-                onClick={() => setRazorpayModalOpen(true)}
+                onClick={() => navigate(`/payment/razorpay/${order.order_number}`)}
                 className="bg-emerald-600 hover:bg-emerald-700 shadow-sm"
               >
                 Complete Payment Now
@@ -459,36 +458,6 @@ export const OrderDetailPage = () => {
           </div>
         </div>
       </div>
-
-      {/* Authentic Razorpay UI Gateway Modal */}
-      {order && (
-        <RazorpayModal
-          isOpen={razorpayModalOpen}
-          onClose={() => setRazorpayModalOpen(false)}
-          onSuccess={async (paymentData) => {
-            setRazorpayModalOpen(false);
-            setPaying(true);
-            try {
-              await paymentService.verifyRazorpayPayment({
-                order_number: order.order_number,
-                razorpay_order_id: paymentData.razorpay_order_id,
-                razorpay_payment_id: paymentData.razorpay_payment_id,
-                razorpay_signature: paymentData.razorpay_signature,
-              });
-              setFeedback({ type: 'success', text: 'Payment completed successfully! Your order is now confirmed.' });
-              await fetchOrder();
-            } catch (err) {
-              setFeedback({ type: 'error', text: err.response?.data?.detail || 'Could not complete payment.' });
-            } finally {
-              setPaying(false);
-              setTimeout(() => setFeedback(null), 5000);
-            }
-          }}
-          amount={order.total_amount}
-          orderNumber={order.order_number}
-          customerName={order.shipping_full_name}
-        />
-      )}
     </div>
   );
 };
