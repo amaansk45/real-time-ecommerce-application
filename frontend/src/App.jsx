@@ -16,6 +16,7 @@ import { RegisterPage } from './pages/customer/RegisterPage';
 import { ProfilePage } from './pages/customer/ProfilePage';
 import { AddressesPage } from './pages/customer/AddressesPage';
 import { CartPage } from './pages/customer/CartPage';
+import { WishlistPage } from './pages/customer/WishlistPage';
 import { DashboardPage as AdminDashboardPage } from './pages/admin/DashboardPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
@@ -79,15 +80,7 @@ export const App = () => {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="wishlist"
-              element={
-                <div className="max-w-5xl mx-auto py-16 px-4 text-center">
-                  <h2 className="text-2xl font-bold font-heading">Wishlist</h2>
-                  <p className="text-sm text-slate-500 mt-2">Wishlist storage will be activated in Step 6.</p>
-                </div>
-              }
-            />
+            <Route path="wishlist" element={<WishlistPage />} />
             <Route path="cart" element={<CartPage />} />
           </Route>
 
